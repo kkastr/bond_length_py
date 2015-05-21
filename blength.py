@@ -18,7 +18,7 @@ for line in file:
 	k = line.split( )
 	coords.append(k)
 
-
+file.close()
 j = 0
 
 
