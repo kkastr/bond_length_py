@@ -5,47 +5,43 @@ import matplotlib.pyplot as plt
 
 file = open("output.xyz",'r')
 
-coords = []
-
 distance = []
 
 crd = []
 
-t = np.linspace(0,1,10001)
+step = []
+
 
 for line in file:
-	if line.startswith('MD'): continue
+	#if line.startswith('MD'): md_iter.append(line)
 	k = line.split( )
-	coords.append(k)
+	crd.append(k)
 
 file.close()
-j = 0
-
-
-#gets rid of the '# of atoms' that dftb likes printing at every iteration
-while j < len(coords):
-	if j % 4.0 != 0:
-		crd.append(coords[j])
-	j+=1 
 
 
 
-for i in range(0,len(crd),3):
-	d = ((float(crd[i+1][1])-float(crd[i][1]))**2 + (float(crd[i+1][2]) - float(crd[i][2]))**2 + (float(crd[i+1][3]) - float(crd[i][3]))**2)**0.5	
-	distance.append(d)
-	#print(d)
+for i in range(0,len(crd),5):
+	H = np.array([ float(crd[i+3][1]), float(crd[i+3][2]), float(crd[i+3][3]) ])
+	O = np.array([ float(crd[i+2][1]), float(crd[i+2][2]), float(crd[i+2][3]) ])
+	vector_sub = H - O
 	
+	d = np.linalg.norm(vector_sub)
+	l = ((float(crd[i+3][1])-float(crd[i+2][1]))**2 + (float(crd[i+3][2]) - float(crd[i+2][2]))**2 + (float(crd[i+3][3]) - float(crd[i+2][3]))**2)**0.5
+	
+	step.append(crd[i+1][2])
+	
+	print(l)
+	print(d)
+	print(abs(l-d))
+	distance.append(l)
 
 
 
 
-
-
-
-
-plt.plot(t,distance)
-plt.ylim([0,max(distance)])
+plt.plot(step,distance)
+plt.ylim([0,1.5])
+plt.xlim([0,2000])
 plt.xlabel('Time (fs)')
 plt.ylabel('Bond Length(Angstrom)') 
 plt.show()
-
